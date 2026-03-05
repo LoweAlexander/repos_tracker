@@ -26,16 +26,10 @@ echo.
 for /f "tokens=*" %%T in ('echo %time%') do set "t=%%T"
 set "t=%t::=-%"
 
-echo time = %t%
-
 for /d %%G in ("%ROOT%\*") do (
 
-    echo Location: %%G
-    set "NAME=%%~nxG"
-    echo Name only: !NAME!
     
-    echo.
-
+    set "NAME=%%~nxG"
     cd /d "%%G"
 
     echo -------------------------
@@ -48,33 +42,38 @@ for /d %%G in ("%ROOT%\*") do (
 
         echo Create GitHub repo for !NAME!?
 	set /p answer=y/n:
+        echo.
 
         if /i "!answer!"=="y" (
 
             if not exist ".gitignore" (
 
-    		echo Creating scientific .gitignore...
+    		echo Creating .gitignore...
 
     		copy "!ROOT!\github_utilities\gitignore_template.txt" ".gitignore" >nul
 	    )
 
 	    echo Initialising git repository...
+	    echo.
             git init
 
             git add .
             git commit -m "Initial commit"
 
             echo Creating GitHub repo...
+	    echo.
             gh repo create !NAME! --private --source=. --remote=origin --push
 
         ) else (
 
             echo Skipping !NAME!
+            echo.
         )
 
     ) else (
 
         echo Syncing existing repository...
+        echo.
 
         git pull --rebase
 
@@ -96,4 +95,5 @@ for /d %%G in ("%ROOT%\*") do (
 echo =============
 echo Sync Complete
 echo =============
+echo.
 pause
