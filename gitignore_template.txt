@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Jupyter
+.ipynb_checkpoints/
+
+# NEURON
+*.dat
+*.hoc~
+*.o
+*.dll
+
+# Simulation outputs
+results/
+output/
+temp/
+log/
+*.csv
+*.log
+
+# Data
+data/raw/
+*.mat
+
+# Figures (generated)
+figures/generated/
+*.png
+*.jpeg
+*.gif
+*.mp4
+
+# OS files
+.DS_Store
+Thumbs.db
