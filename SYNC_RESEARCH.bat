@@ -90,7 +90,7 @@ for /d %%G in ("%ROOT%\*") do (
         )
     )
 
-    echo.
+    echo. This is a test.
 
 )
 
