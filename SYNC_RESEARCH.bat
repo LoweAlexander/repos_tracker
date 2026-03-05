@@ -73,19 +73,21 @@ for /d %%G in ("%ROOT%\*") do (
     ) else (
 
         echo Syncing existing repository...
-        echo.
-
-        git pull --rebase
-
+	echo.
         git add .
-
-	git status -s
-
+        git pull --rebase
+        git status -s
         git diff --cached --quiet
-	if errorlevel 1 git commit -m "Auto-sync %COMPUTERNAME% %date% %t%"
-
-        git push
-
+        if errorlevel 1 (
+            git commit -m "Auto-sync %COMPUTERNAME% %date% %t%"
+        )
+        git remote -v >nul 2>&1
+        if errorlevel 1 (
+            echo No remote configured, skipping push.
+	    echo.
+        ) else (
+            git push
+        )
     )
 
     echo.
