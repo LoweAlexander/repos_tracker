@@ -91,5 +91,7 @@ echo =============
 echo.
 
 if "%1"=="auto" goto :skippauses
-pause
+echo|set /p="Press any key to close..."
+pause >nul
+exit
 :skippauses
