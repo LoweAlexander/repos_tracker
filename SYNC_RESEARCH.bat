@@ -2,6 +2,28 @@
 setlocal EnableDelayedExpansion
 
 set "ROOT=C:\Users\%USERNAME%\Documents\phd_code_repos"
+set "GIST_LOCATION_FILE=%ROOT%\github_utilities\repos_gist_location.txt"
+
+if not exist "%GIST_LOCATION_FILE%" (
+    echo ERROR: Cannot find repos_gist_location.txt
+    echo Expected location: %GIST_LOCATION_FILE%
+    echo Please create this file and add your Gist ID to it.
+    goto :exit_script
+)
+set /p GIST_ID=<"%GIST_LOCATION_FILE%"
+
+if "!GIST_ID!"=="" (
+    echo ERROR: repos_gist_location.txt is empty.
+    echo Please add your Gist ID to it.
+    goto :exit_script
+)
+
+pushd "%ROOT%\github_utilities"
+git remote get-url origin > "%TEMP%\remote_url.txt"
+set /p REMOTE_URL=<"%TEMP%\remote_url.txt"
+for /f "tokens=3 delims=/" %%U in ("!REMOTE_URL!") do set "GITHUB_USER=%%U"
+popd
+
 
 echo ==============
 echo Repo Sync Tool
@@ -13,8 +35,7 @@ if errorlevel 1 (
     echo.
     echo GitHub CLI is not authenticated.
     echo Run: gh auth login
-    pause
-    exit /b
+    goto :exit_script
 )
 
 echo gh auth status: True
@@ -26,6 +47,32 @@ echo.
 for /f "tokens=*" %%T in ('echo %time%') do set "t=%%T"
 set "t=%t::=-%"
 
+
+echo ------------------
+echo Updating Repo List
+echo ------------------
+echo.
+
+echo Fetching repo list from Gist.
+gh gist view %GIST_ID% > "%TEMP%\repos.txt"
+echo.
+
+for /f "tokens=* eol=#" %%R in ("%TEMP%\repos.txt") do (
+    set "REPO=%%R"
+    if not exist "%ROOT%\!REPO!" (
+        echo Cloning !REPO!.
+        gh repo clone !REPO! "%ROOT%\!REPO_NAME!"
+    ) else (
+        echo !REPO! already exists, skipping.
+    )
+)
+
+
+echo ----------
+echo SYNC REPOS
+echo ----------
+echo.
+
 for /d %%G in ("%ROOT%\*") do (
 
     
@@ -35,6 +82,7 @@ for /d %%G in ("%ROOT%\*") do (
     echo -------------------------
     echo Checking !NAME!
     echo -------------------------
+    echo.
 
     if not exist ".git" (
 
@@ -48,12 +96,12 @@ for /d %%G in ("%ROOT%\*") do (
 
             if not exist ".gitignore" (
 
-    		echo Creating .gitignore...
+    		echo Creating .gitignore.
 
     		copy "!ROOT!\github_utilities\gitignore_template.txt" ".gitignore" >nul
 	    )
 
-	    echo Initialising git repository...
+	    echo Initialising git repository.
 	    echo.
             git init
 
@@ -64,6 +112,11 @@ for /d %%G in ("%ROOT%\*") do (
 	    echo.
             gh repo create !NAME! --private --source=. --remote=origin --push
 
+	    echo Adding !GITHUB_USER!/!NAME! to repo list...
+	    gh gist view %GIST_ID% > "%TEMP%\repos.txt"
+	    echo !GITHUB_USER!/!NAME! >> "%TEMP%\repos.txt"
+	    gh gist edit %GIST_ID% "%TEMP%\repos.txt"
+
         ) else (
 
             echo Skipping !NAME!
@@ -71,7 +124,7 @@ for /d %%G in ("%ROOT%\*") do (
         )
 
     ) else (
-        echo Syncing existing repository...
+        echo Syncing existing repository.
         git add .
         git diff --cached --quiet
         if errorlevel 1 (
@@ -90,8 +143,13 @@ echo Sync Complete
 echo =============
 echo.
 
+
+:exit_script
 if "%1"=="auto" goto :skippauses
 echo|set /p="Press any key to close..."
 pause >nul
-exit
 :skippauses
+exit
+
+
+
