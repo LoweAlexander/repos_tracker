@@ -34,3 +34,6 @@ figures/generated/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Hidden files
+repos_gist_location.txt
