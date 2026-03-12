@@ -23,6 +23,7 @@ git remote get-url origin > "%TEMP%\remote_url.txt"
 set /p REMOTE_URL=<"%TEMP%\remote_url.txt"
 echo REMOTE_URL = !REMOTE_URL!
 for /f "tokens=3 delims=/" %%U in ("!REMOTE_URL!") do set "GITHUB_USER=%%U"
+echo GITHUB_USER = !GITHUB_USER!
 popd
 
 
@@ -58,12 +59,12 @@ echo Fetching repo list from Gist.
 gh gist view %GIST_ID% > "%TEMP%\repos.txt"
 echo.
 
-for /f "tokens=* eol=#" %%R in ("%TEMP%\repos.txt") do (
+for /f "usebackq tokens=* eol=#" %%R in ("%TEMP%\repos.txt") do (
     set "REPO=%%R"
     echo Repo = !REPO!
     if not exist "%ROOT%\!REPO!" (
         echo Cloning !REPO!.
-        gh repo clone !REPO! "%ROOT%\!REPO_NAME!"
+        gh repo clone !REPO! "%ROOT%\!REPO!"
     ) else (
         echo !REPO! already exists, skipping.
     )
