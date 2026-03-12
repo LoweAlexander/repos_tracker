@@ -59,7 +59,7 @@ echo.
 
 for /f "tokens=* eol=#" %%R in ("%TEMP%\repos.txt") do (
     set "REPO=%%R"
-    echo !REPO!
+    echo Repo = !REPO!
     if not exist "%ROOT%\!REPO!" (
         echo Cloning !REPO!.
         gh repo clone !REPO! "%ROOT%\!REPO_NAME!"
