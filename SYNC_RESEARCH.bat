@@ -61,10 +61,11 @@ echo.
 
 for /f "usebackq tokens=* eol=#" %%R in ("%TEMP%\repos.txt") do (
     set "REPO=%%R"
+    for /f "tokens=2 delims=/" %%N in ("%%R") do set "REPO_NAME=%%N"
     echo Repo = !REPO!
-    if not exist "%ROOT%\!REPO!" (
+    if not exist "%ROOT%\!REPO_NAME!" (
         echo Cloning !REPO!.
-        gh repo clone !REPO! "%ROOT%\!REPO!"
+        gh repo clone !REPO! "%ROOT%\!REPO_NAME!"
     ) else (
         echo !REPO! already exists, skipping.
     )
