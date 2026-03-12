@@ -69,6 +69,7 @@ for /f "usebackq tokens=* eol=#" %%R in ("%TEMP%\repos.txt") do (
     ) else (
         echo !REPO! already exists, skipping.
     )
+    echo.
 )
 
 
