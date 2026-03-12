@@ -56,7 +56,7 @@ echo ------------------
 echo.
 
 echo Fetching repo list from Gist.
-gh gist view %GIST_ID% > "%TEMP%\repos.txt"
+gh gist view %GIST_ID% --filename tracked_repos.txt> "%TEMP%\repos.txt"
 echo.
 
 for /f "usebackq tokens=* eol=#" %%R in ("%TEMP%\repos.txt") do (
