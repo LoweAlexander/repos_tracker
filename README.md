@@ -1,0 +1,6 @@
+- Create new gist for storing names of tracked repos
+- Add LoweAlexander/github_utilities to the gist to track this repo
+- Download this repo to a new directory phd_code_repos
+- In SYNC_RESEARCH.bat, set path to directory of repos: phd_code_repos
+- Create repos_gist_location.txt
+- In repos_gist_location.txt, set https address for the gist
