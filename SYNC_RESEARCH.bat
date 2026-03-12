@@ -21,7 +21,7 @@ if "!GIST_ID!"=="" (
 pushd "%ROOT%\github_utilities"
 git remote get-url origin > "%TEMP%\remote_url.txt"
 set /p REMOTE_URL=<"%TEMP%\remote_url.txt"
-echo !REMOTE_URL!
+echo REMOTE_URL = !REMOTE_URL!
 for /f "tokens=3 delims=/" %%U in ("!REMOTE_URL!") do set "GITHUB_USER=%%U"
 popd
 
