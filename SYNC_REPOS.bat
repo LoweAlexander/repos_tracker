@@ -1,8 +1,9 @@
 @echo off
 setlocal EnableDelayedExpansion
 
-set "ROOT=C:\Users\%USERNAME%\Documents\phd_code_repos"
-set "GIST_LOCATION_FILE=%ROOT%\github_utilities\repos_gist_location.txt"
+set "SCRIPT_DIR=%~dp0"
+set "ROOT=%SCRIPT_DIR%.."
+set "GIST_LOCATION_FILE=%ROOT%\repos_tracker\repos_gist_location.txt"
 
 if not exist "%GIST_LOCATION_FILE%" (
     echo ERROR: Cannot find repos_gist_location.txt
@@ -80,7 +81,6 @@ echo.
 
 for /d %%G in ("%ROOT%\*") do (
 
-    
     set "NAME=%%~nxG"
     cd /d "%%G"
 
@@ -143,11 +143,11 @@ for /d %%G in ("%ROOT%\*") do (
 
 )
 
+
 echo =============
 echo Sync Complete
 echo =============
 echo.
-
 
 :exit_script
 if "%1"=="auto" goto :skippauses
