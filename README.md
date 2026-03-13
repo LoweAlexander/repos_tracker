@@ -1,4 +1,11 @@
-This repo requires github.CLI to run (shown for WINDOWS):
+Automatic Installation (Windows)
+--------------------------------
+Please download and run the installed found at:
+https://raw.githubusercontent.com/LoweAlexander/repos_tracker/main/install.bat
+
+Manual Installation (Windows)
+-----------------------------
+This repo requires github.CLI to run:
 - winget install Git.Git
 - gh auth login
 - git config --global user.email "your@email.com"
