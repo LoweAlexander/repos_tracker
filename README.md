@@ -1,6 +1,6 @@
 Automatic Installation (Windows)
 --------------------------------
-Please download and run the installed found at:
+Please download and run the installer found at:
 https://raw.githubusercontent.com/LoweAlexander/repos_tracker/main/install.bat
 
 Manual Installation (Windows)
