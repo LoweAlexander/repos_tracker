@@ -122,7 +122,7 @@ for /f "usebackq tokens=1" %%I in ("%TEMP%\gist_list.txt") do (
 
 if "!GIST_ID!"=="" (
     echo tracked_repos.txt not found in gist, creating...
-    echo LoweAlexander/repos_tracker | gh gist create --filename tracked_repos.txt --desc "List of repo names to be synced"
+    echo LoweAlexander/repos_tracker| gh gist create --filename tracked_repos.txt --desc "List of repo names to be synced"
     gh gist list --limit 100 > "%TEMP%\gist_list.txt"
     for /f "usebackq tokens=1" %%I in ("%TEMP%\gist_list.txt") do (
         gh gist view %%I --files > "%TEMP%\gist_files.txt"
