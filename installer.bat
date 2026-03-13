@@ -120,6 +120,24 @@ for /f "usebackq tokens=1" %%I in ("%TEMP%\gist_list.txt") do (
     )
 )
 
+if "!GIST_ID!"=="" (
+    echo tracked_repos.txt not found in gist, creating...
+    echo LoweAlexander/repos_tracker | gh gist create --filename tracked_repos.txt --desc "List of repo names to be synced"
+    gh gist list --limit 100 > "%TEMP%\gist_list.txt"
+    for /f "usebackq tokens=1" %%I in ("%TEMP%\gist_list.txt") do (
+        gh gist view %%I --files > "%TEMP%\gist_files.txt"
+        findstr /i "tracked_repos.txt" "%TEMP%\gist_files.txt" >nul 2>&1
+        if not errorlevel 1 (
+            set "GIST_ID=%%I"
+        )
+    )
+)
+
+if "!GIST_ID!"=="" (
+    echo ERROR: Could not create or find gist. Please check your GitHub authentication.
+    goto :exit_script
+)
+
 if exist "!ROOT!\tracked_repos\repos_tracker\repos_gist_location.txt" (
     echo WARNING: repos_gist_location.txt already exists.
     set /p "OVERWRITE=Overwrite? (y/n): "
