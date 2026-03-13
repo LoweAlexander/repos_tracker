@@ -147,6 +147,8 @@ for /d %%G in ("%ROOT%\*") do (
 
 )
 
+del "%TEMP%\repos.txt" >nul 2>&1
+del "%TEMP%\remote_url.txt" >nul 2>&1
 
 echo =============
 echo Sync Complete
