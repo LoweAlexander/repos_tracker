@@ -141,8 +141,8 @@ powershell -command "$ws = New-Object -ComObject WScript.Shell; $s = $ws.CreateS
 
 
 :: Cleanup
-::del "%TEMP%\gist_list.txt" >nul 2>&1
-::del "%TEMP%\gist_match.txt" >nul 2>&1
+del "%TEMP%\gist_list.txt" >nul 2>&1
+del "%TEMP%\gist_match.txt" >nul 2>&1
 
 
 
