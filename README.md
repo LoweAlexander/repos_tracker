@@ -2,11 +2,14 @@ Updating repos_tracker
 ----------------------
 To avoid security issues, repos_tracker will not automatically sync. Please update manually when needed.
 To update via Git CLI, navigate to your repos_tracker folder and run:
+```
 git pull
+```
 
 Automatic Installation (Windows)
 --------------------------------
 Please download and run the installer found at:
+
 https://raw.githubusercontent.com/LoweAlexander/repos_tracker/master/installer.bat
 
 Manual Installation (Windows)
