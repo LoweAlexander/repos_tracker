@@ -19,7 +19,7 @@ if "!GIST_ID!"=="" (
     goto :exit_script
 )
 
-pushd "%ROOT%\github_utilities"
+pushd "%ROOT%\repos_tracker"
 git remote get-url origin > "%TEMP%\remote_url.txt"
 set /p REMOTE_URL=<"%TEMP%\remote_url.txt"
 echo REMOTE_URL = !REMOTE_URL!
@@ -103,7 +103,7 @@ for /d %%G in ("%ROOT%\*") do (
 
     		echo Creating .gitignore.
 
-    		copy "!ROOT!\github_utilities\gitignore_template.txt" ".gitignore" >nul
+    		copy "!ROOT!\repos_tracker\gitignore_template.txt" ".gitignore" >nul
 	    )
 
 	    echo Initialising git repository.
@@ -129,14 +129,18 @@ for /d %%G in ("%ROOT%\*") do (
         )
 
     ) else (
-        echo Syncing existing repository.
-        git add .
-        git diff --cached --quiet
-        if errorlevel 1 (
-            git commit -m "Auto-sync %COMPUTERNAME% %date% %t%"
+	if "!NAME!"=="repos_tracker" (
+    	    echo Skipping repos_tracker - update manually.
+	) else (
+            echo Syncing existing repository.
+            git add .
+            git diff --cached --quiet
+            if errorlevel 1 (
+                git commit -m "Auto-sync %COMPUTERNAME% %date% %t%"
+            )
+            git pull --rebase
+            git push
         )
-        git pull --rebase
-        git push
     )
 
     echo.
