@@ -2,8 +2,14 @@
 setlocal EnableDelayedExpansion
 
 set "SCRIPT_DIR=%~dp0"
-set "ROOT=%SCRIPT_DIR%.."
+
+set "SCRIPT_DIR=%SCRIPT_DIR:~0,-1%"
+for %%I in ("%SCRIPT_DIR%\..") do set "ROOT=%%~fI"
+
+set "GIST_LOCATION=%ROOT%\repos_tracker"
 set "GIST_LOCATION_FILE=%ROOT%\repos_tracker\repos_gist_location.txt"
+
+echo gist location = !GIST_LOCATION!
 
 if not exist "%GIST_LOCATION_FILE%" (
     echo ERROR: Cannot find repos_gist_location.txt
@@ -63,6 +69,8 @@ echo.
 for /f "usebackq tokens=* eol=#" %%R in ("%TEMP%\repos.txt") do (
     set "REPO=%%R"
     for /f "tokens=2 delims=/" %%N in ("%%R") do set "REPO_NAME=%%N"
+    :: Strip trailing spaces from REPO_NAME
+    for /f "tokens=* delims= " %%S in ("!REPO_NAME!") do set "REPO_NAME=%%S"
     echo Repo = !REPO!
     if not exist "%ROOT%\!REPO_NAME!" (
         echo Cloning !REPO!.
@@ -72,7 +80,6 @@ for /f "usebackq tokens=* eol=#" %%R in ("%TEMP%\repos.txt") do (
     )
     echo.
 )
-
 
 echo ----------
 echo SYNC REPOS
@@ -119,7 +126,7 @@ for /d %%G in ("%ROOT%\*") do (
 
 	    echo Adding !GITHUB_USER!/!NAME! to repo list...
 	    gh gist view %GIST_ID% > "%TEMP%\repos.txt"
-	    echo !GITHUB_USER!/!NAME! >> "%TEMP%\repos.txt"
+	    echo !GITHUB_USER!/!NAME!>> "%TEMP%\repos.txt"
 	    gh gist edit %GIST_ID% "%TEMP%\repos.txt"
 
         ) else (
