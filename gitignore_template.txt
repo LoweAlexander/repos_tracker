@@ -34,3 +34,9 @@ figures/generated/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Package Tracking
+__pycache__/
+*.egg-info/
+dist/
+build/
