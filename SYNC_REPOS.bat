@@ -1,15 +1,8 @@
 @echo off
 setlocal EnableDelayedExpansion
 
-set "SCRIPT_DIR=%~dp0"
-
-set "SCRIPT_DIR=%SCRIPT_DIR:~0,-1%"
-for %%I in ("%SCRIPT_DIR%\..") do set "ROOT=%%~fI"
-
-set "GIST_LOCATION=%ROOT%\repos_tracker"
+set "ROOT=D:\alex1\Documents\tracked_repos"
 set "GIST_LOCATION_FILE=%ROOT%\repos_tracker\repos_gist_location.txt"
-
-echo gist location = !GIST_LOCATION!
 
 if not exist "%GIST_LOCATION_FILE%" (
     echo ERROR: Cannot find repos_gist_location.txt
@@ -25,7 +18,7 @@ if "!GIST_ID!"=="" (
     goto :exit_script
 )
 
-pushd "%ROOT%\repos_tracker"
+pushd "%ROOT%\github_utilities"
 git remote get-url origin > "%TEMP%\remote_url.txt"
 set /p REMOTE_URL=<"%TEMP%\remote_url.txt"
 echo REMOTE_URL = !REMOTE_URL!
@@ -69,8 +62,6 @@ echo.
 for /f "usebackq tokens=* eol=#" %%R in ("%TEMP%\repos.txt") do (
     set "REPO=%%R"
     for /f "tokens=2 delims=/" %%N in ("%%R") do set "REPO_NAME=%%N"
-    :: Strip trailing spaces from REPO_NAME
-    for /f "tokens=* delims= " %%S in ("!REPO_NAME!") do set "REPO_NAME=%%S"
     echo Repo = !REPO!
     if not exist "%ROOT%\!REPO_NAME!" (
         echo Cloning !REPO!.
@@ -81,6 +72,7 @@ for /f "usebackq tokens=* eol=#" %%R in ("%TEMP%\repos.txt") do (
     echo.
 )
 
+
 echo ----------
 echo SYNC REPOS
 echo ----------
@@ -88,6 +80,7 @@ echo.
 
 for /d %%G in ("%ROOT%\*") do (
 
+    
     set "NAME=%%~nxG"
     cd /d "%%G"
 
@@ -110,7 +103,7 @@ for /d %%G in ("%ROOT%\*") do (
 
     		echo Creating .gitignore.
 
-    		copy "!ROOT!\repos_tracker\gitignore_template.txt" ".gitignore" >nul
+    		copy "!ROOT!\github_utilities\gitignore_template.txt" ".gitignore" >nul
 	    )
 
 	    echo Initialising git repository.
@@ -126,7 +119,7 @@ for /d %%G in ("%ROOT%\*") do (
 
 	    echo Adding !GITHUB_USER!/!NAME! to repo list...
 	    gh gist view %GIST_ID% > "%TEMP%\repos.txt"
-	    echo !GITHUB_USER!/!NAME!>> "%TEMP%\repos.txt"
+	    echo !GITHUB_USER!/!NAME! >> "%TEMP%\repos.txt"
 	    gh gist edit %GIST_ID% "%TEMP%\repos.txt"
 
         ) else (
@@ -136,31 +129,25 @@ for /d %%G in ("%ROOT%\*") do (
         )
 
     ) else (
-	if "!NAME!"=="repos_tracker" (
-    	    echo Skipping repos_tracker - update manually.
-	) else (
-            echo Syncing existing repository.
-            git add .
-            git diff --cached --quiet
-            if errorlevel 1 (
-                git commit -m "Auto-sync %COMPUTERNAME% %date% %t%"
-            )
-            git pull --rebase
-            git push
+        echo Syncing existing repository.
+        git add .
+        git diff --cached --quiet
+        if errorlevel 1 (
+            git commit -m "Auto-sync %COMPUTERNAME% %date% %t%"
         )
+        git pull --rebase
+        git push
     )
 
     echo.
 
 )
 
-del "%TEMP%\repos.txt" >nul 2>&1
-del "%TEMP%\remote_url.txt" >nul 2>&1
-
 echo =============
 echo Sync Complete
 echo =============
 echo.
+
 
 :exit_script
 if "%1"=="auto" goto :skippauses
